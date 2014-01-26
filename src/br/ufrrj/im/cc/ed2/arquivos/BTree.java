@@ -4,7 +4,7 @@ package br.ufrrj.im.cc.ed2.arquivos;
  *
  *  Limitações
  *  -----------
- *   -  Assume que M é even and M >= 4
+ *   -  Assume que M >= 4
  *   -  b é um array de filhos ou lista
  *
  *************************************************************************/
