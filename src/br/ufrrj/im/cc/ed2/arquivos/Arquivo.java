@@ -1,68 +1,85 @@
 package br.ufrrj.im.cc.ed2.arquivos;
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.RandomAccessFile;
+
+import br.ufrrj.im.cc.ed2.catalogo.Catalogo;
 
 public class Arquivo implements Iterator {
-	public File file;
-		
-	/* tamanho de cada arquivo */
-	public int tamanhoArquivo1;
-
-	/* leitura do arquivo de entrada */
-	public FileReader fr;
-	public BufferedReader br;
-
+	RandomAccessFile file;
+	public String nomeArquivo;
+	public String nomeRelacao;
+	public long pointer;
 	
-	/* ponteiro para linha do arquivo */
-	public String line = "";
-
+	public Arquivo (String nomeRelacao) {
+		this.nomeRelacao = nomeRelacao;
+		nomeArquivo = Catalogo.getInstance().getFileName(nomeRelacao);
+	}
+		
 	@Override
-	public void open(String arquivo ){
-		file = new File(arquivo);
-		
-		if(!file.exists()) {
-			try {
-				file.createNewFile();
-			} catch (IOException e) {
-				System.err.println("Operação malsucedida!");
-			}
-		}
-		
+	public void open() {
 		try {
-			fr = new FileReader(file);
+			file = new RandomAccessFile(nomeArquivo, "r");
 		} catch (FileNotFoundException e) {
 			System.err.println("Operação malsucedida!");
 		}
-		br = new BufferedReader(fr);	
-		
-		
 	}
 
 	@Override
 	public String next() {
 		try {
-			if(line == null) {
-				throw new IOException("Não há mais registros!");
-			} else {
-				line = br.readLine();
-			}
-			return line;
+			pointer = file.getFilePointer();
+			return file.readLine();
 		} catch (IOException e) {
+			System.err.println("Não há mais registros!");
 			return null;
-		}		
+		}
 	}
 
 	@Override
 	public void close() {
 		try {
-			br.close();
-					} catch (IOException e) {
-			System.err.println("Operação malsucedida!");
+			file.close();
+		} catch (IOException e) {
+			System.err.println("Impossível fechar arquivo!");
 		}
-		
-	}	
+	}
+	
+	public String buscarRegistro (long chave) {
+		String retorno = null;
+		try {
+			file.seek(chave);
+		} catch (IOException e1) {
+			System.err.println("Posicao nao encontrada!");
+		}
+		try {
+			retorno = file.readLine();
+		} catch (IOException e) {
+			System.err.println("Registro nao encontrado!");
+		}
+		return retorno;
+	}
+	
+	public long retornaPosicao() {
+		return pointer;
+	}
+	
+	public String retornaRelacao() {
+		return nomeRelacao;
+	}
+	
+	
+	public String toString() {
+		return nomeArquivo+"	"+nomeRelacao;
+	}
+	
+	public void seek(long numero){
+		try {
+			file.seek(numero);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.err.println("Erro no seek"+ e);
+		}
+	}
 }
