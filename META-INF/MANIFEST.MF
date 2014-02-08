@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: trab_ed2_rmr
+Bundle-SymbolicName: trab_ed2_rmr
+Bundle-Version: 1.0.0.qualifier
