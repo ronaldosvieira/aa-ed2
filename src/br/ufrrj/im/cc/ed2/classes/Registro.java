@@ -3,11 +3,12 @@ package br.ufrrj.im.cc.ed2.classes;
 import java.util.LinkedList;
 import java.util.List;
 
+import br.ufrrj.im.cc.ed2.arquivos.Iterator;
 import br.ufrrj.im.cc.ed2.catalogo.Catalogo;
 import br.ufrrj.im.cc.ed2.catalogo.Coluna;
 import br.ufrrj.im.cc.ed2.catalogo.Item;
 
-public class Registro {
+public class Registro implements Iterator {
 	public List<ColunaRegistro> colunas = new LinkedList<ColunaRegistro>();
 	public String [] tokens;
 	public String relacao;
@@ -30,6 +31,10 @@ public class Registro {
 			colunas.add(colunaRegistro);
 			i++;
 		}		
+	}
+	
+	public Registro() {
+		
 	}
 	
 	public String getValor(String nomeColuna){
@@ -56,17 +61,46 @@ public class Registro {
 	}
 
 	public String toString() {
-		String retorno = tokens[0];
-		
-		for(int i=1;i<tokens.length;i++){			
-			retorno=retorno+"\t"+tokens[i];
-			
+		int i=0;
+		String retorno = "";
+		for(ColunaRegistro cr : colunas){
+			if(i==0){
+				retorno =cr.getValor();
+				i++;
+			}else{
+			retorno = retorno +"	"+cr.getValor();
+			}
 		}
 		return retorno;
 	}
 	
-	public String join (Registro reg) {
-		String retorno = this.toString() + "	" + reg.toString();		
-		return retorno;		
+	public void join (Registro reg) {
+		colunas.addAll(reg.colunas); 
 	}
+	
+	public int retornaPosicaoColuna (String coluna) {
+		for(ColunaRegistro c : colunas) {
+			if(c.getNome().equals(coluna)) {
+				return c.getPosicao();
+			}
+		}
+		return 0;
+	}
+
+	@Override
+	public Iterator open() {
+		return null;
+	}
+
+	@Override
+	public Iterator next() {
+		return null;
+	}
+
+	@Override
+	public Iterator close() {
+		return null;
+	}
+
+
 }

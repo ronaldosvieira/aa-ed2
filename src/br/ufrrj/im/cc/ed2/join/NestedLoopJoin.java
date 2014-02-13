@@ -6,18 +6,15 @@ import br.ufrrj.im.cc.ed2.catalogo.Catalogo;
 import br.ufrrj.im.cc.ed2.catalogo.Item;
 import br.ufrrj.im.cc.ed2.classes.Registro;
 
-public class HashJoin implements Iterator{
-	
+public class NestedLoopJoin implements Iterator {
 	public Arquivo relacaoMaior;
 	public Arquivo relacaoMenor;
 	public String colunaRelacaoMaior;
 	public String colunaRelacaoMenor;
-	public TabelaDispersao tabelaHash;
 	
-	public HashJoin (String relacaoA, String colunaRelacaoA, String relacaoB, String colunaRelacaoB) {		
+	public NestedLoopJoin (String relacaoA, String colunaRelacaoA, String relacaoB, String colunaRelacaoB){
 		Item itemA = Catalogo.getInstance().getItem(relacaoA);
-		Item itemB = Catalogo.getInstance().getItem(relacaoB);
-		
+		Item itemB = Catalogo.getInstance().getItem(relacaoB);		
 		
 		/* Escolhe automaticamente qual das duas relações será armazana na tabela de dispersão */
 		if(itemA.getSize()>itemB.getSize()) {
@@ -34,40 +31,46 @@ public class HashJoin implements Iterator{
 			colunaRelacaoMenor = colunaRelacaoA;
 		}		
 	}
-
-	@Override
-	public Iterator open() {
-		relacaoMenor.open();
-		tabelaHash = new TabelaDispersao ();
-		
-		Registro registro;
-		while((registro= (Registro) relacaoMenor.next())!=null) {
-			tabelaHash.inserir(registro);
-		}
-		relacaoMaior.open();
-		return null;
-	}
 	
 	@Override
+	public Iterator open() {		
+		relacaoMaior.open();
+		relacaoMenor.open();
+		return null;
+	}
+
+	@Override
 	public Iterator next() {
-		Registro registroRelacao = (Registro) relacaoMaior.next();
-		Registro registroTabela;
+		Registro registroRelacaoMaior = (Registro) relacaoMaior.next();
+		Registro registroRelacaoMenor;
+		Registro retorno = null;
+		String chave;
+		String comparador;
 		
-		if(registroRelacao==null) {
+		if(registroRelacaoMaior==null) {
 			return null;
 		}
-		String chave = registroRelacao.getValor(colunaRelacaoMaior);
-		registroTabela = tabelaHash.recuperar(chave);
-		Registro retorno = new Registro();
-		retorno.join(registroRelacao);
-		retorno.join(registroTabela);
+		
+		chave = registroRelacaoMaior.getValor(colunaRelacaoMaior);
+		
+		while((registroRelacaoMenor = (Registro) relacaoMenor.next())!=null) {
+			retorno = new Registro();			
+			comparador = registroRelacaoMenor.getValor(colunaRelacaoMenor);
+			
+			if(comparador.equals(chave)) {
+				retorno.join(registroRelacaoMaior);
+				retorno.join(registroRelacaoMenor);
+				break;
+			}
+		}
+		relacaoMenor.seek(0);
 		return retorno;
 	}
 
 	@Override
 	public Iterator close() {
-		relacaoMenor.close();
 		relacaoMaior.close();
+		relacaoMenor.close();
 		return null;
-	}	
+	}
 }

@@ -1,6 +1,8 @@
 package br.ufrrj.im.cc.ed2.classes;
 
-public class ColunaRegistro {
+import br.ufrrj.im.cc.ed2.arquivos.Iterator;
+
+public class ColunaRegistro implements Iterator{
 	public String nomeColuna;
 	public String valor;
 	public int posicao;
@@ -9,6 +11,25 @@ public class ColunaRegistro {
 		this.nomeColuna = nomeColuna;
 		this.valor = valor;
 		this.posicao = posicao;
+	}
+	
+	public String toString () {
+		return nomeColuna+"	"+valor;
+	}
+
+	@Override
+	public Iterator open() {
+		return null;		
+	}
+
+	@Override
+	public Iterator next() {
+		return null;
+	}
+
+	@Override
+	public Iterator close() {
+		return null;
 	}
 	
 	public String getNome() {
@@ -29,8 +50,5 @@ public class ColunaRegistro {
 		return false;
 	}
 	
-	public String toString () {
-		return nomeColuna+"	"+valor;
-	}
-
+	
 }
