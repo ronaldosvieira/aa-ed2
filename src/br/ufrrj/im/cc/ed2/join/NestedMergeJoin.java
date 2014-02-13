@@ -36,7 +36,6 @@ public class NestedMergeJoin implements Iterator {
 	public Iterator open() {
 		relacaoA.open();
 		relacaoB.open();
-				
 		Registro registroRelacao = null, registroRelacao2 = null ,registroAuxiliar=null;		
 		
 		while((registroAuxiliar = (Registro) relacaoA.next())!=null){
@@ -51,17 +50,21 @@ public class NestedMergeJoin implements Iterator {
 			}			
 		}
 		
+		if(verificaOrdenacao(array,colunaRelacaoA)==false){ //se não estiver ordenado eu ordeno
 		//ordena o arquivo de acordo com a coluna da tabela
-		Collections.sort(array,new Comparador(numeroColuna));
-		relacaoA.close();
-		relacaoA.resetaArquivo();
+			Collections.sort(array,new Comparador(numeroColuna));
+			relacaoA.close();
+			relacaoA.resetaArquivo();		
+			for(int i=0;i<array.size();i++){
+				System.out.println(array.get(i));
+				relacaoA.escrever(array.get(i).toString());			
+			}
 		
-		for(int i=0;i<array.size();i++){
-			System.out.println(array.get(i));
-			relacaoA.escrever(array.get(i).toString());			
+			relacaoA.fecharEscrever();
+			relacaoA.open();
+		}else{
+			relacaoA.seek(0);
 		}
-		
-		relacaoA.fecharEscrever();
 		
 		
 		while((registroAuxiliar = (Registro) relacaoB.next())!=null){
@@ -76,22 +79,24 @@ public class NestedMergeJoin implements Iterator {
 			}			
 		}
 		
+		if(verificaOrdenacao(array2,colunaRelacaoB)==false){ //se não estiver ordenado eu ordeno
 		//ordena o arquivo de acordo com a coluna da tabela
-		Collections.sort(array2,new Comparador(numeroColuna2));
+			Collections.sort(array2,new Comparador(numeroColuna2));
 		
-		relacaoB.close();
-		relacaoB.resetaArquivo();
-		for(int i=0;i<array2.size();i++){
-			System.out.println(array2.get(i));
-			relacaoB.escrever(array2.get(i).toString());		
+			relacaoB.close();
+			relacaoB.resetaArquivo();
+			for(int i=0;i<array2.size();i++){
+				System.out.println(array2.get(i));
+				relacaoB.escrever(array2.get(i).toString());		
+			}
+		
+			relacaoB.fecharEscrever();
+			relacaoB.open();
+		}else{
+			relacaoB.seek(0);
 		}
 		
-		relacaoB.fecharEscrever();
 		
-		
-		
-		relacaoA.open();
-		relacaoB.open();
 				
 		regAux = (Registro) relacaoA.next();
 		regAux2 = (Registro) relacaoB.next();
@@ -107,9 +112,10 @@ public class NestedMergeJoin implements Iterator {
 		Registro retorno = new Registro();
 		boolean igual=false;
 		
-		if(regAux==null ) {
+		if((regAux==null)||(regAux2)==null ) {
 			return null;
 		}
+		
 		
 		registroRelacao = new Registro(regAux.toString(), relacaoA.nomeRelacao, relacaoA.retornaPosicao());
 		registroRelacao2 = new Registro(regAux2.toString(), relacaoB.nomeRelacao, relacaoB.retornaPosicao());
@@ -154,6 +160,25 @@ public class NestedMergeJoin implements Iterator {
 	
 	public void print() {
 		System.out.println(array.size());
+	}
+	
+	public boolean verificaOrdenacao(List<Registro> nomeLista,String coluna){
+		int numero=1;
+		boolean retorno;
+		for (int i=0;i<nomeLista.size()-1;i++){
+			if(nomeLista.get(i).getValor(coluna).compareTo(nomeLista.get(i+1).getValor(coluna))<=0){
+				numero=numero*1;
+			}else{
+				numero=0;
+			}				
+		}
+		if (numero==1){
+			retorno=true;
+		}else{
+			retorno=false;
+		}
+		return retorno;
+		
 	}
 
 }
