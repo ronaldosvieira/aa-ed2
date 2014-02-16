@@ -106,22 +106,29 @@ public class Main {
 //			String novaConcatenada=novo.getValor("aluno_id").toString()+"\t"+novo.getValor("ano")+"\t"+novo.getValor("periodo");
 //			if(!concatenada.equals(novaConcatenada)){
 //				arvore.add(no);
-//				concatenada = novo.getValor("aluno_id").toString()+"\t"+novo.getValor("ano")+"\t"+novo.getValor("periodo");
-//				id =novo.getValor("aluno_id").toString();
+//				concatenada = novaConcatenada;
 //				no = new No(concatenada, hash.get(novo.getValor("disciplina_id")));
-//				no.setKey(concatenada);
-//				no.setValor(hash.get(novo.getValor("disciplina_id")));
+//				//no.setValor(hash.get(novo.getValor("disciplina_id")));
+//				
+//				if(i==aluno.size()-1){
+//					no.setValor(hash.get(novo.getValor("disciplina_id")));
+//					arvore.add(no);					
+//				}
+//				
+//								
 //			}else{				
 //				concatenada = novo.getValor("aluno_id").toString()+"\t"+novo.getValor("ano")+"\t"+novo.getValor("periodo");
-//				no.setValor(hash.get(novo.getValor("disciplina_id")));				
-//			}
-//			if(i==aluno.size()){
-//				concatenada = novo.getValor("aluno_id").toString()+"\t"+novo.getValor("ano")+"\t"+novo.getValor("periodo");
-//				no.setKey(concatenada);
 //				no.setValor(hash.get(novo.getValor("disciplina_id")));
-//				arvore.add(no);
 //				
-//			}
+//				if(i==aluno.size()-1){
+//					no.setValor(hash.get(novo.getValor("disciplina_id")));
+//					arvore.add(no);					
+//				}
+//				
+//				}
+//			
+//			
+//			
 //		}
 //		
 //		arvore.salvarArvore("arvoreb");
@@ -142,7 +149,7 @@ public class Main {
 		
 		
 		
-		System.out.println(arv.getNo("2f4cc4d7-9862-4947-8208-8178f2eda2ca	2000	2").getValue());
+		System.out.println(arv.getNo("fd1ed580-1d3e-4ea7-b471-1bcceb22e0f5	2008	2").getValue());
 
 //					nomeAluno.close();
 //					if(no!=null){
