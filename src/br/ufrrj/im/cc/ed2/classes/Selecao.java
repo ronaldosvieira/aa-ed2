@@ -14,6 +14,7 @@ public class Selecao implements Iterator{
 	String coluna;//coluna ->campo
 	String valor;
 	Iterator relacao;
+
 	
 		
 	public Selecao(String tipoRelacao, String coluna, String valor) {
